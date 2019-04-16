@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Encriptacion": {
+      "commandName": "Project",
+      "commandLineArgs": "\"d:\\rafac\\Documents\\claves.cod\" d"
+    }
+  }
+}
