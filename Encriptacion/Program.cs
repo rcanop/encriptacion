@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using RafaCano.Util.Encriptacion;
 
 namespace Encriptacion
@@ -51,7 +52,7 @@ namespace Encriptacion
             {
                 Console.WriteLine("El Fichero: {0} no existe", nombreFichero.Trim());
             }
-            ejemplocadenas();
+            //ejemplocadenas();
             //Console.ReadKey();
 
         }
@@ -72,6 +73,8 @@ namespace Encriptacion
         static void ejemplocadenas()
         {
             string cadena = "El pico de la cigüeña es largo.";
+            byte[] utfBytes = Encoding.UTF8.GetBytes(cadena);
+            cadena = Convert.ToBase64String(utfBytes);
             Crypto cr = new Crypto("MiKey", "MiP455w0rd");
 
             try
@@ -83,9 +86,9 @@ namespace Encriptacion
                 Console.WriteLine(cipherText);
 
                 cr.Decrypt(cipherText);
-                string decoded = cr.Result;
-                Console.WriteLine(decoded);
-
+                Console.WriteLine(cr.Result);
+                cr.Decode64();
+                Console.WriteLine(cr.Result);
             }
             catch (Exception ex)
             {

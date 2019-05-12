@@ -51,9 +51,22 @@ namespace RafaCano.Util.Encriptacion
             Array.Resize(ref _iv, 16);
         }
 
+        public void Encrypt(string textBase64, string enc = "utf-8")
+        {
+            _Encrypt(textBase64, enc);
+        }
+        public void Decode64(string enc = "utf-8")
+        {
+            byte[] bytes64 = Convert.FromBase64String(_decript);
+            _decript = Encoding.GetEncoding(enc).GetString(bytes64);
 
+        }
+        public void Decrypt(string cipherText, string enc = "utf-8")
+        {
+            _Decrypt(cipherText, enc);
+        }
 
-        public void Encrypt(string text, string enc = "utf-8")
+        private void _Encrypt(string text, string enc = "utf-8")
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Encoding encoding = Encoding.GetEncoding(enc);
@@ -89,7 +102,7 @@ namespace RafaCano.Util.Encriptacion
             }
 
         }
-        public void Decrypt(string cipherText, string enc = "utf-8")
+        public void _Decrypt(string cipherText, string enc = "utf-8")
         {
             process = StateProcessEncryption.decrypting;
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -154,7 +167,7 @@ namespace RafaCano.Util.Encriptacion
                     Array.Resize(ref _iv, 16);
 
                     FileInfo ficheroCodificado = new FileInfo(fichero.DirectoryName + "/" + Path.ChangeExtension(fichero.Name, ".cod"));
-                    Encrypt(texto);
+                    _Encrypt(texto);
 
 
                     using (StreamWriter sw = ficheroCodificado.CreateText())
@@ -202,7 +215,7 @@ namespace RafaCano.Util.Encriptacion
                 Array.Resize(ref _key, 32);
                 Array.Resize(ref _iv, 16);
 
-                Decrypt(cipherText);
+                _Decrypt(cipherText, enc);
 
                 using (StreamWriter sw = DecodeFile.CreateText())
                 {

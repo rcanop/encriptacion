@@ -30,4 +30,16 @@ $ encriptacion <fichero.ext> [d]
     <fichero.ext>   fichero a procesar.
     d               opcional realiza la desencriptación de un fichero ya encriptado '*.cod'
 ```
- 
+
+## Encriptacion.api
+
+Proyecto API en .NET Core 2.2 para encriptar y desencriptar cadenas que se le envían (ésto sólo sería medianamente seguro si se usa con **https**). 
+
+las didecciones serían: 
+- **Encriptar** https:/.../api/encription/encrypt
+- **Desencriptar** https:/.../api/encription/decrypt
+- **Swager** https:/.../swagger
+  - Por ahora sólo funciona los mensajes en JSON, XML. aún no soportado.
+### Ejemplo VFP de consumo de la API
+
+Un pequeño programa para usar el API desde VFP 9.
