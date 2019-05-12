@@ -1,25 +1,12 @@
-*!*	LOCAL lcfich
-*!*	LOCAL loxml AS MSXML2.DOMDocument60 ;
-*!*		, loRoot AS MSXML2.IXMLDOMDocument3 ;
-*!*		, loNodo AS MSXML2.IXMLDOMELEMENT
-
-*!*	lcfich = "k:\Gestasa2007\FICHEROS\0075-1073-20190424-02_C19.xml"
-*!*	m.loxml = CREATEOBJECT("msxml2.DomDocument.6.0")
-*!*
-*!*	m.loxml.LOAD(m.lcfich)
-*!*	m.loRoot = m.loxml.documentElement
-*!*	SET STEP ON
-*!*	m.loNodo = m.loRoot.firstChild
-
-*!*	SET STEP ON
-CLEAR
 LOCAL i
 LOCAL lcURL,lcValue, lcFrase
 LOCAL loXMLHttp AS MSXML.XMLHTTP
 m.lcURL = "https://localhost:44379/api/encription"
 
+CLEAR
+
 *-- Frase a encriptar
-m.lcFrase = "El pico de la cigüeña es largo."
+m.lcFrase = "El pico de la cigÃ¼eÃ±a es largo."
 m.lcFrase = STRCONV(m.lcFrase, 1) && Pasamos a DBCS
 m.lcFrase = STRCONV(m.lcFrase, 9) && Pasamos a UTF-8
 m.lcFrase = STRCONV(m.lcFrase, 13) && Pasamos a Base64
@@ -88,7 +75,7 @@ FUNCTION InformaError(m.tcMsg)
 	IF VARTYPE(m.tcMsg) = "C"
 		m.tcMsg = STREXTRACT(m.tcMsg, "<body>", "</body>")
 		IF !EMPTY(m.tcMsg)
-			MESSAGEBOX(m.tcMsg,16, "Información Error")
+			MESSAGEBOX(m.tcMsg,16, "InformaciÃ³n Error")
 
 		ENDIF
 	ENDIF
