@@ -24,8 +24,6 @@ namespace Encriptacion.api
                 .AddMvc(options =>
                     {
                         options.RespectBrowserAcceptHeader = true;
-                        options.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
-
                     })
                 .AddXmlSerializerFormatters()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

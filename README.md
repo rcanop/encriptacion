@@ -43,3 +43,4 @@ las didecciones serían:
 ### Ejemplo VFP de consumo de la API
 
 Un pequeño programa para usar el API desde VFP 9.
+  - Usando datos en XML y en JSON
