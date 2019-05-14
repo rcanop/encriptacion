@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RafaCano.Util.Encriptacion;
-using RafaCano.Util.Encriptacion.Model;
 using Encriptacion.api.Services;
+using Encriptacion.api.Services.Model;
 namespace Encriptacion.api.Controllers
 {
     [Route("api/[controller]")]
@@ -23,23 +23,31 @@ namespace Encriptacion.api.Controllers
         [HttpGet]
         public ActionResult<string> Get()
         {
-            return "Service Started";
+            return Content("Service Started");
         }
-      
-        [HttpPost("encript")]
-        public ActionResult<ValueEncript> Encript([FromBody] ValueEncript data)
+
+        [HttpPost("encrypt")]
+        public ActionResult<ValueEncrypt> Encrypt([FromBody] ValueEncrypt data)
         {
-            ValueEncript res = new ValueEncript();
+            if (data == null || String.IsNullOrWhiteSpace(data.Value))
+            {
+                return BadRequest();
+            }
+            ValueEncrypt res = new ValueEncrypt();
             _crypto.Encrypt(data.Value, "utf-8");
             res.Value = _crypto.Result;
             return res;
         }
 
         // POST api/encription/decript
-        [HttpPost("decript")]
-        public ActionResult<ValueEncript> Decript([FromBody] ValueEncript data)
+        [HttpPost("decrypt")]
+        public ActionResult<ValueDecrypt> Decrypt([FromBody] ValueDecrypt data)
         {
-            ValueEncript res = new ValueEncript();
+            if (data == null || String.IsNullOrWhiteSpace(data.Value))
+            {
+                return BadRequest();
+            }
+            ValueDecrypt res = new ValueDecrypt();
             _crypto.Decrypt(data.Value, "utf-8");
             res.Value = _crypto.Result;
             return res;
