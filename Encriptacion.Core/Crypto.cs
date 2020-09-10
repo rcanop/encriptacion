@@ -11,7 +11,7 @@ namespace RafaCano.Util.Encriptacion
         private Byte[] _iv;
         private Byte[] _encript;
         private string _decript;
-        private string key = "";
+        private readonly string key = "";
         private StateProcessEncryption process = StateProcessEncryption.none;
         public string Result
         {
@@ -35,12 +35,12 @@ namespace RafaCano.Util.Encriptacion
                 return res;
             }
         }
-        public Crypto(string key, string pwd)
+        public Crypto(string key, string iv)
         {
-            this.key = key; 
-            _key = Encoding.UTF8.GetBytes(pwd);
+            this.key = key;
+            _key = Encoding.UTF8.GetBytes(key);
             Array.Resize(ref _key, 32);
-            _iv = Encoding.UTF8.GetBytes(key);
+            _iv = Encoding.UTF8.GetBytes(iv);
             Array.Resize(ref _iv, 16);
         }
         public Crypto()
@@ -53,7 +53,7 @@ namespace RafaCano.Util.Encriptacion
 
         public void Encrypt(string textBase64, string enc = "utf-8")
         {
-            _Encrypt(textBase64, enc);
+            EncryptProcess(textBase64, enc);
         }
         public void Decode64(string enc = "utf-8")
         {
@@ -63,10 +63,10 @@ namespace RafaCano.Util.Encriptacion
         }
         public void Decrypt(string cipherText, string enc = "utf-8")
         {
-            _Decrypt(cipherText, enc);
+            DecryptProcess(cipherText, enc);
         }
 
-        private void _Encrypt(string text, string enc = "utf-8")
+        private void EncryptProcess(string text, string enc = "utf-8")
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Encoding encoding = Encoding.GetEncoding(enc);
@@ -75,12 +75,12 @@ namespace RafaCano.Util.Encriptacion
             {
                 process = StateProcessEncryption.encrypting;
 
-                using (Rijndael myRijndael = Rijndael.Create())
+                using (Aes aesEncrypt = Aes.Create())
                 {
-                    myRijndael.Key = _key;
-                    myRijndael.IV = _iv;
-
-                    ICryptoTransform encryptor = myRijndael.CreateEncryptor(myRijndael.Key, myRijndael.IV);
+                    aesEncrypt.Key = _key;
+                    aesEncrypt.IV = _iv;
+                    aesEncrypt.Padding = PaddingMode.Zeros;
+                    ICryptoTransform encryptor = aesEncrypt.CreateEncryptor(aesEncrypt.Key, aesEncrypt.IV);
 
                     using (MemoryStream msEncrypt = new MemoryStream())
                     {
@@ -102,20 +102,21 @@ namespace RafaCano.Util.Encriptacion
             }
 
         }
-        public void _Decrypt(string cipherText, string enc = "utf-8")
+        public void DecryptProcess(string cipherText, string enc = "utf-8")
         {
             process = StateProcessEncryption.decrypting;
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Encoding encoding = Encoding.GetEncoding(enc);
             byte[] encoded = Convert.FromBase64String(cipherText);
 
-            using (Rijndael rijAlg = Rijndael.Create())
+            using (Aes aesDecrypt = Aes.Create())
             {
-                rijAlg.Key = _key;
-                rijAlg.IV = _iv;
+                aesDecrypt.Key = _key;
+                aesDecrypt.IV = _iv;
+                aesDecrypt.Padding = PaddingMode.Zeros;
 
                 // Create a decryptor to perform the stream transform.
-                ICryptoTransform decryptor = rijAlg.CreateDecryptor(rijAlg.Key, rijAlg.IV);
+                ICryptoTransform decryptor = aesDecrypt.CreateDecryptor(aesDecrypt.Key, aesDecrypt.IV);
 
                 // Create the streams used for decryption.
                 using (MemoryStream msDecrypt = new MemoryStream(encoded))
@@ -167,7 +168,7 @@ namespace RafaCano.Util.Encriptacion
                     Array.Resize(ref _iv, 16);
 
                     FileInfo ficheroCodificado = new FileInfo(fichero.DirectoryName + "/" + Path.ChangeExtension(fichero.Name, ".cod"));
-                    _Encrypt(texto);
+                    EncryptProcess(texto);
 
 
                     using (StreamWriter sw = ficheroCodificado.CreateText())
@@ -184,7 +185,7 @@ namespace RafaCano.Util.Encriptacion
             }
         }
 
-        public void DecryptFile(FileInfo file, string enc = "")
+        public void DecryptFile(FileInfo file, string enc = "", bool toFile = true, bool hasHeader = true)
         {
             if (String.IsNullOrWhiteSpace(enc))
                 enc = "utf-8";
@@ -197,30 +198,39 @@ namespace RafaCano.Util.Encriptacion
                 string header, cipherText, name, date;
                 header = cipherText = name = date = "";
 
-                int endHeader = Array.IndexOf(contentFile, (byte)0x09, 0, (contentFile.Length > 56 ? 56 : contentFile.Length));
-
-                if (endHeader >= 0)
+                if (hasHeader)
                 {
-                    header = encoding.GetString(contentFile, 0, endHeader + 1);
-                    name = header.Substring(1, header.IndexOf("_", 1) - 1);
-                    date = header.Substring(header.IndexOf("_", 1) + 1, 14);
-                    cipherText = encoding.GetString(contentFile, endHeader + 1, contentFile.Length - endHeader - 1);
+                    int endHeader = Array.IndexOf(contentFile, (byte)0x09, 0, (contentFile.Length > 56 ? 56 : contentFile.Length));
+
+                    if (endHeader >= 0)
+                    {
+                        header = encoding.GetString(contentFile, 0, endHeader + 1);
+                        name = header.Substring(1, header.IndexOf("_", 1) - 1);
+                        date = header.Substring(header.IndexOf("_", 1) + 1, 14);
+                        cipherText = encoding.GetString(contentFile, endHeader + 1, contentFile.Length - endHeader - 1);
+                    }
+
+                    _key = encoding.GetBytes(key + date);
+                    _iv = encoding.GetBytes(name);
+                }
+                else
+                {
+                    cipherText = encoding.GetString(contentFile, 0, contentFile.Length);
+                    name = file.Name;
                 }
 
                 FileInfo DecodeFile = new FileInfo(file.DirectoryName + "/" + name + ".decod");
 
-                _key = encoding.GetBytes(key + date);
-                _iv = encoding.GetBytes(name);
-
                 Array.Resize(ref _key, 32);
                 Array.Resize(ref _iv, 16);
 
-                _Decrypt(cipherText, enc);
+                DecryptProcess(cipherText, enc);
 
-                using (StreamWriter sw = DecodeFile.CreateText())
-                {
-                    sw.Write(Result);
-                }
+                if (toFile)
+                    using (StreamWriter sw = DecodeFile.CreateText())
+                    {
+                        sw.Write(Result);
+                    };
 
             }
             catch (Exception ex)
