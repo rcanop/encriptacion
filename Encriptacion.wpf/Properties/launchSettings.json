@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Encriptacion.wpf": {
+      "commandName": "Project",
+      "commandLineArgs": "\"Mi fichero de claves.cod\""
+    }
+  }
+}

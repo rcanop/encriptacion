@@ -58,11 +58,11 @@ namespace Encriptacion
         }
         static void Proceder(FileInfo fichero, bool descodificar = false, string enc = "utf-8")
         {
-            Crypto cr = new Crypto("MiKey", "MiP455w0rd");
+            Crypto cr = new Crypto("Gestasa@19", "GestasaNetCore");
        
             if (descodificar)
-            {
-                cr.DecryptFile(fichero, enc);
+            { 
+                cr.DecryptFile(fichero, enc, true, false);
             }
             else
             {
