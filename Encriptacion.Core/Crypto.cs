@@ -2,6 +2,7 @@
 using System.Text;
 using System.Security.Cryptography;
 using System.IO;
+using System.Linq;
 
 namespace RafaCano.Util.Encriptacion
 {
@@ -77,9 +78,13 @@ namespace RafaCano.Util.Encriptacion
 
                 using (Aes aesEncrypt = Aes.Create())
                 {
+                    aesEncrypt.Clear();
+                    aesEncrypt.Mode = CipherMode.CBC;
+                    aesEncrypt.Padding = PaddingMode.PKCS7;
+                    aesEncrypt.KeySize = 256;
                     aesEncrypt.Key = _key;
                     aesEncrypt.IV = _iv;
-                    aesEncrypt.Padding = PaddingMode.Zeros;
+                    
                     ICryptoTransform encryptor = aesEncrypt.CreateEncryptor(aesEncrypt.Key, aesEncrypt.IV);
 
                     using (MemoryStream msEncrypt = new MemoryStream())
@@ -111,9 +116,12 @@ namespace RafaCano.Util.Encriptacion
 
             using (Aes aesDecrypt = Aes.Create())
             {
+                aesDecrypt.Clear();
+                aesDecrypt.Mode = CipherMode.CBC;
+                aesDecrypt.Padding = PaddingMode.PKCS7;
+                aesDecrypt.KeySize = 256;
                 aesDecrypt.Key = _key;
                 aesDecrypt.IV = _iv;
-                aesDecrypt.Padding = PaddingMode.Zeros;
 
                 // Create a decryptor to perform the stream transform.
                 ICryptoTransform decryptor = aesDecrypt.CreateDecryptor(aesDecrypt.Key, aesDecrypt.IV);
@@ -162,7 +170,7 @@ namespace RafaCano.Util.Encriptacion
                 {
 
                     string texto = contenido.ReadToEnd();
-                    _key = encoding.GetBytes(key + DateTime.Now.ToString("yyyyMMddHHmmss"));
+                    _key = encoding.GetBytes(key + DateTime.Now.ToString("ssmmHHddMMyyyy"));
                     Array.Resize(ref _key, 32);
                     _iv = encoding.GetBytes(fichero.Name);
                     Array.Resize(ref _iv, 16);
@@ -173,8 +181,10 @@ namespace RafaCano.Util.Encriptacion
 
                     using (StreamWriter sw = ficheroCodificado.CreateText())
                     {
-
-                        sw.Write("_" + fichero.Name + "_" + DateTime.Now.ToString("yyyyMMddHHmmss") + "\t" + Result);
+                        string baseHead = fichero.Name + "_" + DateTime.Now.ToString("ssmmHHddMMyyyy");
+                        byte[] headBinary = encoding.GetBytes(baseHead);
+                        string head = Convert.ToBase64String(headBinary);
+                        sw.Write(head + "\t" + Result);
                     }
                 }
             }
@@ -205,8 +215,10 @@ namespace RafaCano.Util.Encriptacion
                     if (endHeader >= 0)
                     {
                         header = encoding.GetString(contentFile, 0, endHeader + 1);
-                        name = header.Substring(1, header.IndexOf("_", 1) - 1);
-                        date = header.Substring(header.IndexOf("_", 1) + 1, 14);
+                        byte[] headerBinary = Convert.FromBase64String(header);
+                        header = encoding.GetString(headerBinary);
+                        name = header.Substring(0, header.IndexOf("_"));
+                        date = header.Substring(header.IndexOf("_") + 1, 14);
                         cipherText = encoding.GetString(contentFile, endHeader + 1, contentFile.Length - endHeader - 1);
                     }
 

@@ -1,8 +1,7 @@
 {
   "profiles": {
     "Encriptacion": {
-      "commandName": "Project",
-      "commandLineArgs": "\"K:\\AES\\vfpencryption71\\cripto.txt\" d"
+      "commandName": "Project"
     }
   }
 }

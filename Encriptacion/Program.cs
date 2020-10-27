@@ -52,17 +52,17 @@ namespace Encriptacion
             {
                 Console.WriteLine("El Fichero: {0} no existe", nombreFichero.Trim());
             }
-            //ejemplocadenas();
-            //Console.ReadKey();
+            ejemplocadenas();
+            Console.ReadKey();
 
         }
-        static void Proceder(FileInfo fichero, bool descodificar = false, string enc = "utf-8")
+        static void Proceder(FileInfo fichero, bool descodificar = false, string enc = "utf-8", string key = "M1P455w0rd", string iv = "NetCore")
         {
-            Crypto cr = new Crypto("Gestasa@19", "GestasaNetCore");
+            Crypto cr = new Crypto(key, iv);
        
             if (descodificar)
             { 
-                cr.DecryptFile(fichero, enc, true, false);
+                cr.DecryptFile(fichero, enc, true, true);
             }
             else
             {
