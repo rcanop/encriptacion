@@ -1,25 +1,25 @@
-# Proyecto de encriptaci髇 en .NET Core
+# Proyecto de encriptaci贸n en .NET Core
 
-Este proyecto lo he utilizado para aprender las a manejar la encriptaci髇 de cadenas y ficheros en .NET Core usando AES usando la especificaci髇 Rijndael, que trae .NET Core.
+Este proyecto lo he utilizado para aprender las a manejar la encriptaci贸n de cadenas y ficheros en .NET Core usando AES usando la especificaci贸n Rijndael, que trae .NET Core.
 
 Se compone de los siguientes proyectos:
 
-- **Encriptacion.Core** Conjunto de clases para manejar la encriptaci髇. 
-- **Encriptacion**  Aplicaci髇 consola para encriptar ficheros.
+- **Encriptacion.Core** Conjunto de clases para manejar la encriptaci贸n. 
+- **Encriptacion**  Aplicaci贸n consola para encriptar ficheros.
 
 ## Encriptacion.Core
 
-Es la librer韆 propiamente dicha de encriptaci髇.
+Es la librer铆a propiamente dicha de encriptaci贸n.
 
 Por ahora contiene:
     
-- M閠odos para encriptar cadenas **UTF-8** devolvi閚dolas en formato **Base64**. 
+- M茅todos para encriptar cadenas **UTF-8** devolvi茅ndolas en formato **Base64**. 
   - `Encrypt` Para encriptar la cadena
   - `Decrypt` Para desencriptar la cadena codificada.
 
-- M閠odos pare encriptar ficheros en formato **UTF-8**. 
-  - `EncryptFile` Cambiando su extensi髇 a `.cod` cuando se ha codificado.
-  - `DecryptFile` Desencripta el fichero encriptado anteriormente restableciendo su extensi髇 y a馻diendo otra `.decod`.
+- M茅todos pare encriptar ficheros en formato **UTF-8**. 
+  - `EncryptFile` Cambiando su extensi贸n a `.cod` cuando se ha codificado.
+  - `DecryptFile` Desencripta el fichero encriptado anteriormente restableciendo su extensi贸n y a帽adiendo otra `.decod`.
 
 ## Encriptacion
 
@@ -28,19 +28,19 @@ Utilidad consola que sirve para codificar ficheros. Su uso es el siguiente:
 ```
 $ encriptacion <fichero.ext> [d]
     <fichero.ext>   fichero a procesar.
-    d               opcional realiza la desencriptaci髇 de un fichero ya encriptado '*.cod'
+    d               opcional realiza la desencriptaci贸n de un fichero ya encriptado '*.cod'
 ```
 
 ## Encriptacion.api
 
-Proyecto API en .NET Core 2.2 para encriptar y desencriptar cadenas que se le env韆n (閟to s髄o ser韆 medianamente seguro si se usa con **https**). 
+Proyecto API en .NET Core 3.1 para encriptar y desencriptar cadenas que se le env铆an (茅sto s贸lo ser铆a medianamente seguro si se usa con **https**). 
 
-las didecciones ser韆n: 
+las didecciones ser铆an: 
 - **Encriptar** https:/.../api/encription/encrypt
 - **Desencriptar** https:/.../api/encription/decrypt
 - **Swager** https:/.../swagger
-  - Por ahora s髄o funciona los mensajes en JSON, XML. a鷑 no soportado.
+  - Por ahora s贸lo funciona los mensajes en JSON, XML a煤n no soportado.
 ### Ejemplo VFP de consumo de la API
 
-Un peque駉 programa para usar el API desde VFP 9.
+Un peque帽o programa para usar el API desde VFP 9.
   - Usando datos en XML y en JSON
