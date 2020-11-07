@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using RafaCano.Util.Encriptacion;
 using Encriptacion.api.Services;
 using Encriptacion.api.Services.Model;
 namespace Encriptacion.api.Controllers
@@ -12,20 +7,20 @@ namespace Encriptacion.api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     
-    public class EncriptionController : ControllerBase
+    public class EncryptionController : ControllerBase
     {
         private readonly CryptoService _crypto;
-        public EncriptionController(CryptoService crypto)
+        public EncryptionController(CryptoService crypto)
         {
             _crypto = crypto;
         }
-        // POST api/encription
-        [HttpGet]
-        public ActionResult<string> Get()
-        {
-            return Content("Service Started");
-        }
 
+        /// <summary>
+        /// Encripta una cadena
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns>Cadena encriptada</returns>
+        /// <response code="200">Devuelve la cadena encriptada</response>
         [HttpPost("encrypt")]
         public ActionResult<ValueEncrypt> Encrypt([FromBody] ValueEncrypt data)
         {
@@ -39,7 +34,12 @@ namespace Encriptacion.api.Controllers
             return res;
         }
 
-        // POST api/encription/decript
+        /// <summary>
+        /// Desencripta una cadena
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns>Cadena desencriptada</returns>
+        /// <response code="200">Devuelve la cadena encriptada</response>
         [HttpPost("decrypt")]
         public ActionResult<ValueDecrypt> Decrypt([FromBody] ValueDecrypt data)
         {

@@ -5,6 +5,7 @@ namespace Encriptacion.api
 {
     public class Program
     {
+#pragma warning disable CS1591
         public static void Main(string[] args)
         {
             CreateWebHostBuilder(args).Build().Run();
@@ -14,4 +15,5 @@ namespace Encriptacion.api
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>();
     }
+#pragma warning restore CS1591
 }
